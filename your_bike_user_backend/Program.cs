@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using your_bike_user_backend.Database;
+using your_bike_user_backend.Handler;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,5 +35,21 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseWebSockets();
+
+app.Map("/ws", async context =>
+{
+    if (context.WebSockets.IsWebSocketRequest)
+    {
+        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+        await NotificationWebSocketHandler.HandleConnection(webSocket);
+    }
+    else
+    {
+        context.Response.StatusCode = 400;
+    }
+});
+
 
 app.Run();

@@ -7,5 +7,6 @@ namespace your_bike_user_backend.Database
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
         public DbSet<Bike> Bikes { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

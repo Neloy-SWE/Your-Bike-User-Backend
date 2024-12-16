@@ -8,6 +8,7 @@ namespace your_bike_user_backend.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public bool Read { get; set; }
         public required string Brand { get; set; }
         public required string Model { get; set; }
     }

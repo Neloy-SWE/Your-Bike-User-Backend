@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using your_bike_user_backend.Database;
+using your_bike_user_backend.Handler;
 using your_bike_user_backend.Models;
 
 namespace your_bike_user_backend.Controllers
@@ -15,7 +16,7 @@ namespace your_bike_user_backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
-        public IActionResult AddNewBikeRequest([FromBody] Notification notification)
+        public async Task<IActionResult> AddNewBikeRequest([FromBody] Notification notification)
         {
             try
             {
@@ -43,8 +44,8 @@ namespace your_bike_user_backend.Controllers
                 Notification newNotification = new() { Brand = notification.Brand, Model = notification.Model, Read = false };
 
                 _databaseContext.Notifications.Add(newNotification);
-                _databaseContext.SaveChanges();
-
+                await _databaseContext.SaveChangesAsync();
+                await NotificationWebSocketHandler.BroadcastMessage("New Notification!");
                 BaseData<String> success = new()
                 {
                     Status = "success",

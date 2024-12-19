@@ -1,7 +1,10 @@
-﻿namespace your_bike_user_backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace your_bike_user_backend.Models
 {
     public class Bike
     {
+        [Required]
         public int Id { get; set; }
         public required string Name { get; set; }
         public required string Image { get; set; }

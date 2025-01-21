@@ -10,7 +10,7 @@ namespace your_bike_user_backend.Controllers
     {
         private readonly DatabaseContext _databaseContext = databaseContext;
 
-        [HttpGet("GetSingleBike")]
+        [HttpGet("GetSingleBike{Id:int}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

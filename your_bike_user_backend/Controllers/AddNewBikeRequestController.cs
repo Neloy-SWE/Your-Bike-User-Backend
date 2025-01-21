@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using your_bike_user_backend.Database;
-using your_bike_user_backend.Handler;
 using your_bike_user_backend.Models;
 
 namespace your_bike_user_backend.Controllers
@@ -16,16 +15,26 @@ namespace your_bike_user_backend.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status202Accepted)]
-        public async Task<IActionResult> AddNewBikeRequest([FromBody] Notification notification)
+        public IActionResult AddNewBikeRequest([FromBody] Notification notification)
         {
             try
             {
-                if (_databaseContext.Bikes.FirstOrDefault(u => u.Name.ToLower() == notification.Model.ToLower()) != null)
+                if (_databaseContext.Bikes.FirstOrDefault(u => u.Name.ToLower() == notification.Model.ToLower() && u.BrandName.ToLower() == notification.Brand.ToLower()) != null)
                 {
                     BaseData<String> fail = new()
                     {
                         Status = "fail",
                         Message = "Bike already Exists!",
+                        Data = ""
+                    };
+                    return BadRequest(fail);
+                }
+                if (_databaseContext.Notifications.FirstOrDefault(u => u.Brand.ToLower() == notification.Brand.ToLower() && u.Model.ToLower() == notification.Model.ToLower()) != null)
+                {
+                    BaseData<String> fail = new()
+                    {
+                        Status = "fail",
+                        Message = "Already someone added this request!",
                         Data = ""
                     };
                     return BadRequest(fail);
@@ -44,8 +53,7 @@ namespace your_bike_user_backend.Controllers
                 Notification newNotification = new() { Brand = notification.Brand, Model = notification.Model, Read = false };
 
                 _databaseContext.Notifications.Add(newNotification);
-                await _databaseContext.SaveChangesAsync();
-                await NotificationWebSocketHandler.BroadcastMessage("New Notification!");
+                _databaseContext.SaveChanges();
                 BaseData<String> success = new()
                 {
                     Status = "success",

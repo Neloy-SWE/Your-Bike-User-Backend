@@ -50,7 +50,7 @@ namespace your_bike_user_backend.Controllers
                     return BadRequest(fail);
                 }
 
-                Notification newNotification = new() { Brand = notification.Brand, Model = notification.Model, Read = false };
+                Notification newNotification = new() { Brand = notification.Brand, Model = notification.Model, Read = true };
 
                 _databaseContext.Notifications.Add(newNotification);
                 _databaseContext.SaveChanges();
